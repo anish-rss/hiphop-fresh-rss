@@ -245,7 +245,7 @@ def main():
     records = json.loads(Path(sys.argv[1]).read_text('utf-8')) if len(sys.argv) > 1 else fetch_records()
     xml = generate(records)
     OUT.mkdir(parents=True, exist_ok=True)
-    (OUT / 'feed.xml').write_bytes(xml)
+    (OUT / 'test2.xml').write_bytes(xml)
     (OUT / 'index.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><title>HipHop Fresh RSS</title><h1>HipHop Fresh RSS</h1><p><a href="feed.xml">Subscribe to RSS</a></p>\n', encoding='utf-8')
     (OUT / '.nojekyll').touch()
     print('Published RSS to', OUT / 'feed.xml')
