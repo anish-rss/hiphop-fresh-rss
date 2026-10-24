@@ -1,0 +1,52 @@
+
+name: Publish HipHop Fresh RSS
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 8,20 * * *'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Generate HipHop Fresh RSS
+        env:
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+          APIFY_TASK: fascinated_cleverness~Reddit-Scraper-Pro-task
+          FEED_BASE_URL: https://anish-rss.github.io/hiphop-fresh-rss
+        run: python generate_rss.py
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload RSS files
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy RSS to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
