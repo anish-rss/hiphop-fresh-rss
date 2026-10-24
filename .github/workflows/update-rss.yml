@@ -3,8 +3,12 @@ name: Publish HipHop Fresh RSS
 
 on:
   workflow_dispatch:
+
   schedule:
-    - cron: '0 8,20 * * *'
+    # Publish at 5:30 AM and 5:30 PM Sydney time.
+    # Apify collects at 4:30 AM and 4:30 PM.
+    - cron: '30 5,17 * * *'
+      timezone: 'Australia/Sydney'
 
 permissions:
   contents: read
@@ -39,6 +43,12 @@ jobs:
           FEED_BASE_URL: https://anish-rss.github.io/hiphop-fresh-rss
         run: python generate_rss.py
 
+      - name: Verify RSS output
+        run: |
+          test -s site/feed.xml
+          test -s site/index.html
+          echo "RSS files generated successfully"
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
@@ -47,6 +57,6 @@ jobs:
         with:
           path: site
 
-      - name: Deploy RSS to GitHub Pages
+      - name: Publish RSS to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
