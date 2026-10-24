@@ -5,9 +5,9 @@ on:
   workflow_dispatch:
 
   schedule:
-    # Publish at 5:30 AM and 5:30 PM Sydney time.
-    # Apify collects at 4:30 AM and 4:30 PM.
-    - cron: '30 5,17 * * *'
+    # Apify collects at 4:30 PM Sydney time.
+    # Publish RSS at 5:30 PM Sydney time.
+    - cron: '30 17 * * *'
       timezone: 'Australia/Sydney'
 
 permissions:
@@ -46,8 +46,9 @@ jobs:
       - name: Verify RSS output
         run: |
           test -s site/feed.xml
+          test -s site/test2.xml
           test -s site/index.html
-          echo "RSS files generated successfully"
+          echo "Both RSS feeds generated successfully"
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
